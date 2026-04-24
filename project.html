@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects — MyPortfolio</title>
+  <link rel="stylesheet" href="styles/style.css">
+  <link rel="stylesheet" href="styles/project.css">
+  <link rel="stylesheet" href="styles/light.css">
+  <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="logotxt">
+    <h1><span class="first">My</span><span class="second">Portfolio</span></h1>
+  </div>
+  <nav class="menu">
+    <ul>
+      <li><a href="homepage.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="project.html" class="active">Projects</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="index.html" class="logout-btn">Logout</a></li>
+    </ul>
+  </nav>
+</header>
+
+<button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
+  <span class="knob">
+    <i data-feather="moon"  class="icon-sun"></i>
+    <i data-feather="sun"   class="icon-moon"></i>
+  </span>
+</button>
+
+<main class="content">
+  <div class="projects-page">
+
+    <!-- Header -->
+    <div style="margin-bottom: 36px;">
+      <span class="section-tag">Work</span>
+      <h1 class="section-title">My Projects</h1>
+      <p style="color:var(--text-muted);font-size:16px;margin-top:8px;">
+        Projects I've built as a BSIT student — loaded dynamically from JSON.
+      </p>
+    </div>
+
+    <!-- Filter bar -->
+    <div class="filter-bar">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="Web Development">Web Dev</button>
+      <button class="filter-btn" data-filter="UI/UX Design">UI/UX</button>
+      <button class="filter-btn" data-filter="App Design">App Design</button>
+    </div>
+
+    <!-- Projects grid — populated by script.js via fetch('data/projects.json') -->
+    <div class="projects-grid" id="projectsGrid">
+      <div class="projects-loading">
+        <div class="loader-ring"></div>
+        <span>Loading projects…</span>
+      </div>
+    </div>
+
+    <!-- Skills section -->
+    <div class="skills-section">
+      <span class="section-tag">Skills</span>
+      <h2 class="section-title" style="font-size:24px;margin-top:10px;">Core Skills</h2>
+      <div class="skills-pills">
+        <div class="skill-pill"><span class="dot"></span>HTML5 &amp; Semantic Structure</div>
+        <div class="skill-pill"><span class="dot"></span>Java — OOP</div>
+        <div class="skill-pill"><span class="dot"></span>Python — Scripting</div>
+        <div class="skill-pill"><span class="dot"></span>CSS3 &amp; Flexbox</div>
+        <div class="skill-pill"><span class="dot"></span>JavaScript (ES6+)</div>
+        <div class="skill-pill"><span class="dot"></span>UI/UX Design</div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer class="foot">
+  <p>© 2026 Bryan Domingo · All rights reserved</p>
+</footer>
+
+<script src="scripts/script.js"></script>
+</body>
+</html>

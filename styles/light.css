@@ -1,0 +1,35 @@
+/* ===================================================
+   light.css — Light Mode Supplementary Overrides
+   Most theming is handled by CSS variables in style.css.
+   This file patches elements that need explicit overrides.
+=================================================== */
+
+/* ── Nav ──────────────────────────────────────────── */
+body.light-mode .topbar {
+  background: rgba(240, 244, 251, 0.92);
+  border-bottom-color: rgba(0, 100, 200, 0.15);
+}
+
+/* ── Auth page (no body.light-mode on auth pages) ─── */
+
+/* ── Media controls tint ──────────────────────────── */
+body.light-mode audio,
+body.light-mode video {
+  filter: invert(0.08) hue-rotate(180deg);
+}
+
+/* ── Contact form fields ─────────────────────────── */
+body.light-mode .contact-form .form-field input,
+body.light-mode .contact-form .form-field textarea {
+  background: rgba(0,0,0,0.02);
+  color: var(--text);
+}
+
+/* ── Project box override ─────────────────────────── */
+body.light-mode .project-card {
+  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+}
+
+/* ── Scrollbar ────────────────────────────────────── */
+body.light-mode ::-webkit-scrollbar-track { background: #e8eef8; }
+body.light-mode ::-webkit-scrollbar-thumb { background: rgba(0,100,200,0.25); }

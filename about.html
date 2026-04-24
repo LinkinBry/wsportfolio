@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — MyPortfolio</title>
+  <link rel="stylesheet" href="styles/style.css">
+  <link rel="stylesheet" href="styles/about.css">
+  <link rel="stylesheet" href="styles/light.css">
+  <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="logotxt">
+    <h1><span class="first">My</span><span class="second">Portfolio</span></h1>
+  </div>
+  <nav class="menu">
+    <ul>
+      <li><a href="homepage.html">Home</a></li>
+      <li><a href="about.html" class="active">About</a></li>
+      <li><a href="project.html">Projects</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="index.html" class="logout-btn">Logout</a></li>
+    </ul>
+  </nav>
+</header>
+
+<button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
+  <span class="knob">
+    <i data-feather="moon"  class="icon-sun"></i>
+    <i data-feather="sun"   class="icon-moon"></i>
+  </span>
+</button>
+
+<main class="content">
+
+  <!-- Hero row -->
+  <div class="about-hero">
+    <div class="about-avatar">
+      <img src="images/profile.jpg" alt="Bryan Jay Domingo">
+    </div>
+    <div class="about-intro">
+      <span class="section-tag">About Me</span>
+      <h1 class="section-title">Bryan Jay Domingo</h1>
+      <p>
+        Hello! I'm a 2nd year <strong>BSIT student</strong> at <strong>OLSHCO</strong>. 
+        I enjoy building simple, functional websites that promote digital literacy 
+        and responsible technology use among students.
+      </p>
+    </div>
+  </div>
+
+  <!-- Content blocks -->
+  <div class="about-sections">
+
+    <!-- Learning resources -->
+    <div class="about-block">
+      <span class="section-tag">Learning</span>
+      <h2 class="section-title">Where I Learned Coding</h2>
+
+      <div class="resource-list">
+
+        <div class="resource-item">
+          <div class="resource-header">
+            W3Schools
+            <svg class="resource-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </div>
+          <div class="resource-body">
+            <p>
+              I learned the basics of HTML, CSS, and JavaScript from
+              <a href="https://www.w3schools.com" target="_blank" rel="noopener">W3Schools</a>,
+              which gave me a strong foundation in web development.
+            </p>
+          </div>
+        </div>
+
+        <div class="resource-item">
+          <div class="resource-header">
+            SDPT Solutions
+            <svg class="resource-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </div>
+          <div class="resource-body">
+            <p>
+              On <a href="https://www.youtube.com/@SDPTSolutions" target="_blank" rel="noopener">SDPT Solutions</a>,
+              I first learned <strong>Java</strong> and <strong>Python</strong>. Tutorials explained in
+              Tagalog/Filipino made them much more relatable.
+            </p>
+          </div>
+        </div>
+
+        <div class="resource-item">
+          <div class="resource-header">
+            Bro Code
+            <svg class="resource-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </div>
+          <div class="resource-body">
+            <p>
+              <a href="https://www.youtube.com/@BroCodez" target="_blank" rel="noopener">Bro Code</a>
+              helped me strengthen my programming knowledge with clear tutorials in Java and Python.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Vision -->
+    <div class="about-block">
+      <span class="section-tag">Vision</span>
+      <h2 class="section-title">My Vision</h2>
+      <div class="vision-card">
+        <div class="vision-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
+          </svg>
+        </div>
+        <div class="vision-text">
+          <h3>Responsible Technology for Students</h3>
+          <p>
+            I want to lead projects that promote responsible technology use and digital literacy,
+            starting with this portfolio as a simple, student-friendly platform.
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<footer class="foot">
+  <p>© 2026 Bryan Domingo · All rights reserved</p>
+</footer>
+
+<script src="scripts/script.js"></script>
+</body>
+</html>

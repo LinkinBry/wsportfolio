@@ -1,0 +1,189 @@
+/* ===================================================
+   about.css — About Page
+=================================================== */
+
+.about-hero {
+  display: flex;
+  align-items: center;
+  gap: 56px;
+  padding: 0 64px;
+  max-width: 1100px;
+  margin: 0 auto 80px;
+  flex-wrap: wrap;
+}
+
+.about-avatar {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.about-avatar img {
+  width: 260px;
+  height: 260px;
+  border-radius: 20px;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  display: block;
+  position: relative;
+  z-index: 1;
+}
+
+.about-avatar::before {
+  content: '';
+  position: absolute;
+  top: 12px; left: 12px;
+  right: -12px; bottom: -12px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  z-index: 0;
+}
+
+.about-intro {
+  flex: 1;
+}
+
+.about-intro .section-title { margin-bottom: 16px; }
+
+.about-intro p {
+  font-size: 17px;
+  color: var(--text-muted);
+  line-height: 1.8;
+  max-width: 580px;
+}
+
+.about-intro p strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* ── Sections ─────────────────────────────────────── */
+.about-sections {
+  padding: 0 64px;
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+}
+
+.about-block {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Resources accordion */
+.resource-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.resource-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: border-color var(--transition);
+}
+
+.resource-item:hover { border-color: var(--accent); }
+
+.resource-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text);
+  transition: color var(--transition);
+  user-select: none;
+}
+
+.resource-header:hover { color: var(--accent); }
+
+.resource-chevron {
+  width: 18px; height: 18px;
+  color: var(--text-muted);
+  transition: transform var(--transition);
+  flex-shrink: 0;
+}
+
+.resource-item.open .resource-chevron {
+  transform: rotate(180deg);
+}
+
+.resource-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1), padding 0.3s ease;
+  padding: 0 20px;
+}
+
+.resource-item.open .resource-body {
+  max-height: 200px;
+  padding: 0 20px 20px;
+}
+
+.resource-body p {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.resource-body a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.resource-body a:hover { text-decoration: underline; }
+
+/* Vision card */
+.vision-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.vision-icon {
+  width: 44px; height: 44px;
+  background: var(--accent-dim);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.vision-text h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.vision-text p {
+  font-size: 15px;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+@media (max-width: 900px) {
+  .about-hero { padding: 0 28px; gap: 36px; }
+  .about-sections { padding: 0 28px; }
+  .about-avatar img { width: 200px; height: 200px; }
+}
+
+@media (max-width: 540px) {
+  .about-hero { flex-direction: column; }
+  .about-avatar img { width: 160px; height: 160px; }
+}

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home — MyPortfolio</title>
+  <link rel="stylesheet" href="styles/style.css">
+  <link rel="stylesheet" href="styles/home.css">
+  <link rel="stylesheet" href="styles/light.css">
+  <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body>
+
+<!-- Navigation -->
+<header class="topbar">
+  <div class="logotxt">
+    <h1><span class="first">My</span><span class="second">Portfolio</span></h1>
+  </div>
+  <nav class="menu">
+    <ul>
+      <li><a href="homepage.html" class="active">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="project.html">Projects</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="index.html" class="logout-btn">Logout</a></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- Theme toggle -->
+<button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
+  <span class="knob">
+    <i data-feather="moon"  class="icon-sun"></i>
+    <i data-feather="sun"   class="icon-moon"></i>
+  </span>
+</button>
+
+<main class="content">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="greeting-tag">
+      <span class="greeting-dot"></span>
+      <span id="greeting">Good Day. Welcome to my portfolio!</span>
+    </div>
+
+    <div class="hero-main">
+      <div class="hero-text">
+        <h1 class="hero-name">Bryan Jay<br><span class="accent">Domingo</span></h1>
+        <p class="hero-subtitle">2nd Year BSIT Student · OLSHCO</p>
+        <p class="hero-desc">
+          Building simple, functional websites that promote digital literacy
+          and responsible technology use among students.
+        </p>
+        <div class="hero-btns">
+          <a href="project.html" class="btn-primary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            View Projects
+          </a>
+          <a href="contact.html" class="btn-outline">Get in Touch</a>
+        </div>
+      </div>
+
+      <div class="hero-avatar">
+        <img src="images/profile.jpg" alt="Bryan Jay Domingo">
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <div class="stats-strip">
+    <div class="stat"><span class="stat-num">3+</span><span class="stat-label">Projects</span></div>
+    <div class="stat"><span class="stat-num">4</span><span class="stat-label">Skills</span></div>
+    <div class="stat"><span class="stat-num">2026</span><span class="stat-label">Year</span></div>
+    <div class="stat"><span class="stat-num">BSIT</span><span class="stat-label">Program</span></div>
+  </div>
+
+  <!-- Media section -->
+  <section class="media-section">
+    <div>
+      <span class="section-tag">Media</span>
+      <h2 class="section-title">Audio & Demo</h2>
+    </div>
+    <!-- toggle-btn will be injected here by JS -->
+    <div class="media-grid">
+      <div class="media-card">
+        <p class="media-card-title">Introduction Audio</p>
+        <audio controls>
+          <source src="audio/audio.mp3" type="audio/mpeg">
+          Your browser does not support audio.
+        </audio>
+      </div>
+
+      <div class="media-card">
+        <p class="media-card-title">My Skills</p>
+        <ul class="skills-list">
+          <li>HTML5 &amp; Semantic Structure</li>
+          <li>Java — Object-Oriented Programming</li>
+          <li>Python — Scripting &amp; Automation</li>
+          <li>UI/UX Design Principles</li>
+        </ul>
+      </div>
+
+      <div class="media-card" style="grid-column: 1 / -1;">
+        <p class="media-card-title">Project Demo</p>
+        <video controls>
+          <source src="video/demo.mp4" type="video/mp4">
+          Your browser does not support video.
+        </video>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <p>© 2026 Bryan Domingo · All rights reserved</p>
+</footer>
+
+<script src="scripts/script.js"></script>
+</body>
+</html>

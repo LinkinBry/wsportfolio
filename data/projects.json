@@ -1,0 +1,29 @@
+[
+  {
+    "id": 1,
+    "title": "Portfolio Website",
+    "category": "Web Development",
+    "image": "images/c1.png",
+    "description": "A responsive personal portfolio built with HTML5, CSS3, and vanilla JavaScript. Features dark/light mode toggle, smooth animations, and mobile-first design principles.",
+    "tags": ["HTML5", "CSS3", "JavaScript"],
+    "year": 2026
+  },
+  {
+    "id": 2,
+    "title": "TaleTail",
+    "category": "UI/UX Design",
+    "image": "images/c2.png",
+    "description": "A kid-friendly storytelling platform with playful cartoon illustrations and gentle, inclusive language — designed for emotional clarity and accessibility.",
+    "tags": ["UI Design", "Accessibility", "CSS3"],
+    "year": 2025
+  },
+  {
+    "id": 3,
+    "title": "Educational App Mockup",
+    "category": "App Design",
+    "image": "images/c3.png",
+    "description": "A high-fidelity UI mockup for an ASP.NET Web Forms project, experimenting with premium layouts and modern color palettes for academic tools.",
+    "tags": ["ASP.NET", "UI Mockup", "Web Forms"],
+    "year": 2025
+  }
+]
