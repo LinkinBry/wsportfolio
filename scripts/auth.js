@@ -1,196 +1,341 @@
 /* ===================================================
-   auth.js — Authentication (Login & Register)
+   auth.js — Centered Auth · MyPortfolio
+   Bryan Jay Domingo · 2026
 =================================================== */
+'use strict';
 
-// ── Toast helper ─────────────────────────────────────
-function showToast(message, type = 'success') {
-  let toast = document.getElementById('toast');
-  if (!toast) {
-    toast = document.createElement('div');
-    toast.id = 'toast';
-    toast.className = 'toast';
-    toast.innerHTML = `<span class="toast-icon"></span><span class="toast-msg"></span>`;
-    document.body.appendChild(toast);
+/* ── Storage helpers ──────────────────────────────── */
+const getUsers   = ()     => JSON.parse(localStorage.getItem('portfolio_users') || '[]');
+const saveUsers  = (u)    => localStorage.setItem('portfolio_users', JSON.stringify(u));
+const setSession = (name) => localStorage.setItem('portfolio_current', name);
+
+/* ── Toast ────────────────────────────────────────── */
+function toast(msg, type = 'inf', ms = 3400) {
+  const rack = document.getElementById('toastRack');
+  if (!rack) return;
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `<span class="toast-ic"></span><span>${msg}</span>`;
+  rack.appendChild(el);
+  setTimeout(() => {
+    el.classList.add('out');
+    el.addEventListener('animationend', () => el.remove(), { once: true });
+  }, ms);
+}
+
+/* ── Field state helpers ──────────────────────────── */
+function setOk(id, msg = '') {
+  const f = document.getElementById(id);
+  if (!f) return;
+  f.classList.remove('is-err');
+  f.classList.add('is-ok');
+  const m = f.querySelector('.ff-msg');
+  if (m) m.textContent = msg;
+}
+function setErr(id, msg) {
+  const f = document.getElementById(id);
+  if (!f) return;
+  f.classList.remove('is-ok');
+  f.classList.add('is-err');
+  const m = f.querySelector('.ff-msg');
+  if (m) m.textContent = msg;
+}
+function clrField(id) {
+  const f = document.getElementById(id);
+  if (!f) return;
+  f.classList.remove('is-ok', 'is-err');
+  const m = f.querySelector('.ff-msg');
+  if (m) m.textContent = '';
+}
+
+function showBanner(id, msg) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.add('show');
+}
+function hideBanner(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.remove('show');
+}
+
+/* ── View switching ───────────────────────────────── */
+function switchTo(panel) {
+  const login = document.getElementById('loginView');
+  const reg   = document.getElementById('registerView');
+  if (!login || !reg) return;
+
+  if (panel === 'register') {
+    login.classList.remove('active');
+    reg.classList.add('active');
+    // re-trigger animation
+    reg.style.animation = 'none';
+    requestAnimationFrame(() => { reg.style.animation = ''; });
+  } else {
+    reg.classList.remove('active');
+    login.classList.add('active');
+    login.style.animation = 'none';
+    requestAnimationFrame(() => { login.style.animation = ''; });
+    clearLogin();
   }
-  toast.querySelector('.toast-msg').textContent = message;
-  toast.querySelector('.toast-icon').innerHTML =
-    type === 'success'
-      ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`
-      : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
-  toast.className = `toast ${type}`;
-  requestAnimationFrame(() => toast.classList.add('show'));
-  clearTimeout(toast._timer);
-  toast._timer = setTimeout(() => toast.classList.remove('show'), 3200);
 }
 
-// ── Field validation helpers ──────────────────────────
-function setError(inputEl, errorEl, msg) {
-  inputEl.classList.add('error');
-  if (errorEl) { errorEl.textContent = msg; errorEl.classList.add('show'); }
+document.querySelectorAll('.av-switch').forEach(btn => {
+  btn.addEventListener('click', () => switchTo(btn.dataset.to));
+});
+
+// Handle redirect from register.html
+if (sessionStorage.getItem('auth_panel') === 'register') {
+  sessionStorage.removeItem('auth_panel');
+  switchTo('register');
 }
 
-function clearError(inputEl, errorEl) {
-  inputEl.classList.remove('error');
-  if (errorEl) { errorEl.classList.remove('show'); }
-}
-
-function validateEmail(val) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
-}
-
-// ── Password toggle ───────────────────────────────────
-function attachEyeToggle(toggleId, ...inputIds) {
-  const btn = document.getElementById(toggleId);
-  if (!btn) return;
-  let visible = false;
+/* ── Eye toggles ──────────────────────────────────── */
+document.querySelectorAll('.ff-eye').forEach(btn => {
   btn.addEventListener('click', () => {
-    visible = !visible;
-    inputIds.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.type = visible ? 'text' : 'password';
-    });
-    btn.innerHTML = visible
-      ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a21.77 21.77 0 0 1 5.06-6.94M9.88 9.88A3 3 0 0 0 12 15a3 3 0 0 0 2.12-5.12M1 1l22 22"/></svg>`
-      : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+    const inp = document.getElementById(btn.dataset.for);
+    if (!inp) return;
+    const show = inp.type === 'password';
+    inp.type = show ? 'text' : 'password';
+    btn.querySelector('.i-show').style.display = show ? 'none' : '';
+    btn.querySelector('.i-hide').style.display = show ? ''     : 'none';
   });
-}
+});
 
-// ── REGISTER ─────────────────────────────────────────
-const registerForm = document.getElementById('registerForm');
-if (registerForm) {
-  attachEyeToggle('toggleRegPass', 'regPassword', 'confirmPassword');
+/* ── Password strength ────────────────────────────── */
+const RULES = {
+  len:   v => v.length >= 8,
+  upper: v => /[A-Z]/.test(v),
+  num:   v => /[0-9]/.test(v),
+  sym:   v => /[^A-Za-z0-9]/.test(v),
+};
 
-  registerForm.addEventListener('submit', function (e) {
-    e.preventDefault();
-    let valid = true;
+function updateStrength(val) {
+  const segs = [0,1,2,3].map(i => document.getElementById(`seg${i}`));
+  const lbl  = document.getElementById('pwLbl');
+  const pills = {
+    len: document.getElementById('req-len'),
+    up:  document.getElementById('req-up'),
+    num: document.getElementById('req-num'),
+    sym: document.getElementById('req-sym'),
+  };
 
-    const usernameEl   = document.getElementById('regUsername');
-    const passwordEl   = document.getElementById('regPassword');
-    const confirmEl    = document.getElementById('confirmPassword');
-    const usernameErr  = document.getElementById('usernameErr');
-    const passwordErr  = document.getElementById('passwordErr');
-    const confirmErr   = document.getElementById('confirmErr');
+  const score = Object.values(RULES).filter(fn => fn(val)).length;
 
-    const username = usernameEl.value.trim();
-    const password = passwordEl.value;
-    const confirm  = confirmEl.value;
+  segs.forEach(s => { if (s) s.className = 'pw-seg'; });
 
-    // Clear previous
-    [usernameEl, passwordEl, confirmEl].forEach((el, i) =>
-      clearError(el, [usernameErr, passwordErr, confirmErr][i]));
+  const cls    = ['','s1','s2','s3','s4'];
+  const labels = ['','Weak','Fair','Good','Strong'];
+  const colors = ['','#f87171','#fbbf24','#60a5fa','#34d399'];
 
-    if (username.length < 3) {
-      setError(usernameEl, usernameErr, 'Username must be at least 3 characters.');
-      valid = false;
-    } else {
-      const users = JSON.parse(localStorage.getItem('users')) || [];
-      if (users.find(u => u.username.toLowerCase() === username.toLowerCase())) {
-        setError(usernameEl, usernameErr, 'That username is already taken.');
-        valid = false;
-      }
-    }
-
-    if (password.length < 6) {
-      setError(passwordEl, passwordErr, 'Password must be at least 6 characters.');
-      valid = false;
-    }
-
-    if (confirm !== password) {
-      setError(confirmEl, confirmErr, 'Passwords do not match.');
-      valid = false;
-    }
-
-    if (!valid) return;
-
-    const users = JSON.parse(localStorage.getItem('users')) || [];
-    users.push({ username, password });
-    localStorage.setItem('users', JSON.stringify(users));
-
-    showToast('Account created! Redirecting to login…', 'success');
-    setTimeout(() => { window.location.href = 'index.html'; }, 1600);
-  });
-}
-
-// ── LOGIN ─────────────────────────────────────────────
-const userForm = document.getElementById('userForm');
-if (userForm) {
-  attachEyeToggle('togglePass', 'password');
-
-  // Prefill from Remember Me
-  const saved = localStorage.getItem('rememberedUser');
-  if (saved) {
-    const usernameEl = document.getElementById('username');
-    const remEl      = document.getElementById('rememberMe');
-    if (usernameEl) usernameEl.value = saved;
-    if (remEl)      remEl.checked = true;
+  for (let i = 0; i < score; i++) {
+    if (segs[i]) segs[i].classList.add(cls[score]);
+  }
+  if (lbl) {
+    lbl.textContent  = val ? (labels[score] || '') : '';
+    lbl.style.color  = colors[score] || 'var(--text-dim)';
   }
 
-  userForm.addEventListener('submit', function (e) {
-    e.preventDefault();
-    let valid = true;
+  // Pills
+  if (pills.len) pills.len.classList.toggle('met', RULES.len(val));
+  if (pills.up)  pills.up .classList.toggle('met', RULES.upper(val));
+  if (pills.num) pills.num.classList.toggle('met', RULES.num(val));
+  if (pills.sym) pills.sym.classList.toggle('met', RULES.sym(val));
+}
 
-    const usernameEl  = document.getElementById('username');
-    const passwordEl  = document.getElementById('password');
-    const loginErr    = document.getElementById('loginErr');
+const rPassEl = document.getElementById('r-pass');
+if (rPassEl) {
+  rPassEl.addEventListener('input', () => {
+    updateStrength(rPassEl.value);
+    const cfm = document.getElementById('r-confirm');
+    if (cfm?.value) validateConfirm();
+  });
+}
 
-    const username = usernameEl.value.trim();
-    const password = passwordEl.value;
+/* ── Validation helpers ───────────────────────────── */
+function validateUsername(v) {
+  if (!v)                          return 'Username is required.';
+  if (v.length < 3)                return 'At least 3 characters.';
+  if (v.length > 20)               return 'Max 20 characters.';
+  if (!/^[A-Za-z0-9_]+$/.test(v)) return 'Letters, numbers & underscores only.';
+  const taken = getUsers().some(u => u.username.toLowerCase() === v.toLowerCase());
+  if (taken)                       return 'Username already taken.';
+  return null;
+}
+function validateEmail(v) {
+  if (!v) return null; // optional
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? null : 'Enter a valid email.';
+}
+function validatePw(v) {
+  if (!v)              return 'Password is required.';
+  if (!RULES.len(v))   return 'At least 8 characters required.';
+  if (!RULES.upper(v)) return 'Add an uppercase letter (A–Z).';
+  if (!RULES.num(v))   return 'Add a number (0–9).';
+  if (!RULES.sym(v))   return 'Add a special character (#$!…).';
+  return null;
+}
+function validateConfirm() {
+  const pw  = document.getElementById('r-pass')?.value    || '';
+  const cfm = document.getElementById('r-confirm')?.value || '';
+  if (!cfm)      { setErr('fr-confirm', 'Please confirm your password.'); return false; }
+  if (cfm !== pw){ setErr('fr-confirm', 'Passwords do not match.');        return false; }
+  setOk('fr-confirm', 'Passwords match ✓');
+  return true;
+}
 
-    clearError(usernameEl, null);
-    clearError(passwordEl, null);
-    if (loginErr) loginErr.classList.remove('show');
+/* ── Live blur validation (register) ─────────────── */
+(function attachBlur() {
+  const rUser  = document.getElementById('r-user');
+  const rEmail = document.getElementById('r-email');
+  const rPass  = document.getElementById('r-pass');
+  const rCfm   = document.getElementById('r-confirm');
 
-    if (!username || !password) {
-      if (loginErr) { loginErr.textContent = 'Please fill in all fields.'; loginErr.classList.add('show'); }
-      valid = false;
-    }
+  rUser?.addEventListener('blur', () => {
+    const e = validateUsername(rUser.value.trim());
+    e ? setErr('fr-user', e) : setOk('fr-user');
+  });
+  rUser?.addEventListener('input', () => clrField('fr-user'));
 
-    if (!valid) return;
+  rEmail?.addEventListener('blur', () => {
+    const v = rEmail.value.trim();
+    if (!v) { clrField('fr-email'); return; }
+    const e = validateEmail(v);
+    e ? setErr('fr-email', e) : setOk('fr-email');
+  });
+  rEmail?.addEventListener('input', () => clrField('fr-email'));
 
-    const users   = JSON.parse(localStorage.getItem('users')) || [];
-    const matched = users.find(u =>
-      u.username.toLowerCase() === username.toLowerCase() && u.password === password);
+  rPass?.addEventListener('blur', () => {
+    const e = validatePw(rPass.value);
+    e ? setErr('fr-pass', e) : setOk('fr-pass');
+  });
+
+  rCfm?.addEventListener('blur',  validateConfirm);
+  rCfm?.addEventListener('input', () => clrField('fr-confirm'));
+})();
+
+/* ── Submit loader ────────────────────────────────── */
+function setLoading(btnId, on) {
+  const btn = document.getElementById(btnId);
+  if (!btn) return;
+  btn.disabled = on;
+  btn.classList.toggle('loading', on);
+}
+
+/* ════════════════════════════════════════════════════
+   REGISTER SUBMIT
+════════════════════════════════════════════════════ */
+document.getElementById('registerForm')?.addEventListener('submit', e => {
+  e.preventDefault();
+  hideBanner('registerErr');
+
+  const username = document.getElementById('r-user')?.value.trim()  || '';
+  const email    = document.getElementById('r-email')?.value.trim() || '';
+  const password = document.getElementById('r-pass')?.value         || '';
+  const confirm  = document.getElementById('r-confirm')?.value      || '';
+
+  let valid = true;
+
+  const uErr = validateUsername(username);
+  if (uErr) { setErr('fr-user', uErr); valid = false; } else setOk('fr-user');
+
+  if (email) {
+    const eErr = validateEmail(email);
+    if (eErr) { setErr('fr-email', eErr); valid = false; } else setOk('fr-email');
+  }
+
+  const pErr = validatePw(password);
+  if (pErr) { setErr('fr-pass', pErr); valid = false; } else setOk('fr-pass');
+
+  if (!validateConfirm()) valid = false;
+
+  if (!valid) return;
+
+  setLoading('registerBtn', true);
+  setTimeout(() => {
+    const users = getUsers();
+    users.push({ username, email, password });
+    saveUsers(users);
+    setLoading('registerBtn', false);
+    toast(`Account created! Welcome, ${username} 🎉`, 'ok', 3000);
+    setTimeout(() => switchTo('login'), 1100);
+  }, 900);
+});
+
+/* ════════════════════════════════════════════════════
+   LOGIN SUBMIT
+════════════════════════════════════════════════════ */
+function clearLogin() {
+  ['fl-user','fl-pass'].forEach(clrField);
+  hideBanner('loginErr');
+}
+
+// Prefill remembered username
+const remembered = localStorage.getItem('portfolio_remembered');
+const lUserEl    = document.getElementById('l-user');
+const remEl      = document.getElementById('rememberMe');
+if (remembered && lUserEl) {
+  lUserEl.value = remembered;
+  if (remEl) remEl.checked = true;
+}
+
+document.getElementById('loginForm')?.addEventListener('submit', e => {
+  e.preventDefault();
+  hideBanner('loginErr');
+
+  const username = document.getElementById('l-user')?.value.trim() || '';
+  const password = document.getElementById('l-pass')?.value        || '';
+
+  let valid = true;
+  if (!username) { setErr('fl-user', 'Username is required.'); valid = false; } else clrField('fl-user');
+  if (!password) { setErr('fl-pass', 'Password is required.'); valid = false; } else clrField('fl-pass');
+  if (!valid) return;
+
+  setLoading('loginBtn', true);
+  setTimeout(() => {
+    const matched = getUsers().find(u =>
+      u.username.toLowerCase() === username.toLowerCase() && u.password === password
+    );
+    setLoading('loginBtn', false);
 
     if (matched) {
-      localStorage.setItem('currentUser', matched.username);
-      if (document.getElementById('rememberMe')?.checked) {
-        localStorage.setItem('rememberedUser', matched.username);
+      setSession(matched.username);
+      if (remEl?.checked) {
+        localStorage.setItem('portfolio_remembered', matched.username);
       } else {
-        localStorage.removeItem('rememberedUser');
+        localStorage.removeItem('portfolio_remembered');
       }
-      showToast(`Welcome back, ${matched.username}!`, 'success');
-      setTimeout(() => { window.location.href = 'homepage.html'; }, 1400);
+      setOk('fl-user'); setOk('fl-pass');
+      toast(`Welcome back, ${matched.username}!`, 'ok', 2400);
+      setTimeout(() => { window.location.href = 'homepage.html'; }, 1100);
     } else {
-      if (loginErr) { loginErr.textContent = 'Invalid username or password.'; loginErr.classList.add('show'); }
-      usernameEl.classList.add('error');
-      passwordEl.classList.add('error');
-      showToast('Login failed. Please check your credentials.', 'error');
+      setErr('fl-user', ' ');
+      setErr('fl-pass', 'Invalid username or password.');
+      showBanner('loginErr', 'Incorrect credentials. Please try again.');
+      toast('Login failed. Check your credentials.', 'err');
     }
-  });
-}
+  }, 800);
+});
 
-// ── Google OAuth (One Tap) ────────────────────────────
+/* ── Google OAuth ─────────────────────────────────── */
 function handleCredentialResponse(response) {
   try {
     const payload = JSON.parse(atob(response.credential.split('.')[1]));
-    const name    = (payload.name || payload.email || '').split(' ')[0];
-    localStorage.setItem('currentUser', name);
-    showToast(`Welcome, ${name}!`, 'success');
-    setTimeout(() => { window.location.href = 'homepage.html'; }, 1400);
+    const name    = (payload.name || payload.email || 'User').split(' ')[0];
+    setSession(name);
+    toast(`Welcome, ${name}! Signed in with Google.`, 'ok');
+    setTimeout(() => { window.location.href = 'homepage.html'; }, 1200);
   } catch {
-    showToast('Google sign-in failed.', 'error');
+    toast('Google sign-in failed. Try again.', 'err');
   }
 }
 
 window.onload = function () {
   if (typeof google !== 'undefined' && google.accounts) {
-    const googleBtn = document.getElementById('googleLogin');
+    const btn = document.getElementById('googleLoginBtn');
     google.accounts.id.initialize({
       client_id: '1092065868844-94i0do6rmmf5thhngthvkmplkaejnpg2.apps.googleusercontent.com',
-      callback: handleCredentialResponse
+      callback: handleCredentialResponse,
     });
-    if (googleBtn) {
-      google.accounts.id.renderButton(googleBtn, { theme: 'outline', size: 'large' });
-    }
+    if (btn) google.accounts.id.renderButton(btn, { theme: 'outline', size: 'large' });
   }
 };
